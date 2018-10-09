@@ -48,8 +48,7 @@ class EmailTableViewCell: UITableViewCell{
     @IBOutlet weak var moreOptionsIcon: UIImageView!
     
     var email: Email!
-    var firstTimer = true
-    var isLoading = false
+    var isLoaded = false
     var initialZoomScale: CGFloat = 0
     var attachments : List<File> {
         return email.files
@@ -68,6 +67,7 @@ class EmailTableViewCell: UITableViewCell{
         attachmentsTableView.dataSource = self
         let nib = UINib(nibName: "AttachmentTableViewCell", bundle: nil)
         attachmentsTableView.register(nib, forCellReuseIdentifier: "attachmentTableCell")
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
     }
     
     func setupView(){
@@ -81,13 +81,16 @@ class EmailTableViewCell: UITableViewCell{
         webView.configuration.userContentController.add(self, name: "iosListener")
     }
     
-    func setContent(_ email: Email, myEmail: String){
-        if(firstTimer){
-            email.isLoaded = false
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "estimatedProgress" {
+            webViewEvaluateHeight(self.webView)
         }
+    }
+    
+    func setContent(_ email: Email, myEmail: String){
         
         self.email = email
-        let isExpanded = email.isExpanded && email.isLoaded
+        let isExpanded = email.isExpanded
         
         heightConstraint.constant = email.cellHeight
         attachmentsTableView.reloadData()
@@ -116,17 +119,12 @@ class EmailTableViewCell: UITableViewCell{
             setCollapsedContent(email)
         }
         
-        if(email.isExpanded && !email.isLoaded){
+        if(email.isExpanded && !isLoaded){
             loadWebview(email: email)
         }
         
         if(email.isUnsending){
             circleLoaderUIView.loaderColor = UIColor.red.cgColor
-            circleLoaderUIView.layoutSubviews()
-            circleLoaderUIView.animate()
-            circleLoaderUIView.isHidden = false
-        } else if (isLoading) {
-            circleLoaderUIView.loaderColor = UIColor.mainUI.cgColor
             circleLoaderUIView.layoutSubviews()
             circleLoaderUIView.animate()
             circleLoaderUIView.isHidden = false
@@ -161,8 +159,7 @@ class EmailTableViewCell: UITableViewCell{
     }
     
     func loadWebview(email: Email){
-        firstTimer = false
-        isLoading = true
+        isLoaded = true
         let bundleUrl = URL(fileURLWithPath: Bundle.main.bundlePath)
         let content = "\(Constants.htmlTopWrapper)\(email.getContent())\(Constants.htmlBottomWrapper)"
         webView.scrollView.minimumZoomScale = 0.5
@@ -247,8 +244,12 @@ extension EmailTableViewCell{
 
 extension EmailTableViewCell: WKNavigationDelegate, WKScriptMessageHandler, UIScrollViewDelegate{
     
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        webViewEvaluateHeight(webView)
+    }
+    
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        guard !isLoading else {
+        guard !webView.isLoading else {
             return
         }
         if(webView.scrollView.zoomScale < initialZoomScale){
@@ -265,12 +266,6 @@ extension EmailTableViewCell: WKNavigationDelegate, WKScriptMessageHandler, UISc
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        isLoading = false
-        self.delegate?.tableViewCellDidLoadContent(self, email: self.email)
-        if(!email.isUnsending){
-            circleLoaderUIView.layer.removeAllAnimations()
-            circleLoaderUIView.isHidden = true
-        }
         initialZoomScale = webView.scrollView.zoomScale
         webViewEvaluateHeight(webView)
     }
@@ -287,6 +282,7 @@ extension EmailTableViewCell: WKNavigationDelegate, WKScriptMessageHandler, UISc
             }
             self.heightConstraint.constant = newHeight
             self.delegate?.tableViewCellDidChangeHeight(newHeight, email: self.email)
+            webview.sizeToFit()
         }
     }
     
