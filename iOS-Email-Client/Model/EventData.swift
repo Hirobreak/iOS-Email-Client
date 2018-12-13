@@ -24,6 +24,7 @@ class EventData {
         case KeyBundle(Int32)
         case RecoveryVerified
         case LinkStart([String: Any])
+        case SyncStart([String: Any])
     }
     
     struct Result {
@@ -34,6 +35,7 @@ class EventData {
         var removed = false
         var updateSideMenu = false
         var linkStartData = [String: Any]()
+        var syncStartData = [String: Any]()
         var feature: MailboxData.Feature? = nil
     }
     

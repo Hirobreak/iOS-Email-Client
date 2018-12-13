@@ -37,6 +37,7 @@ class SettingsGeneralViewController: UITableViewController{
             case recovery
             case syncContact
             case deleteAccount
+            case manualSync
             
             case privacy
             case terms
@@ -59,6 +60,8 @@ class SettingsGeneralViewController: UITableViewController{
                     return String.localize("Change Password")
                 case .deleteAccount:
                     return String.localize("DELETE_ACCOUNT")
+                case .manualSync:
+                    return String.localize("MANUAL_SYNC")
                 case .twoFactor:
                     return String.localize("Two-Factor Authentication")
                 case .recovery:
@@ -84,7 +87,7 @@ class SettingsGeneralViewController: UITableViewController{
     let ROW_HEIGHT: CGFloat = 40.0
     let sections = [.account, .about, .version] as [Section]
     let menus = [
-        .account: [.profile, .signature, .changePassword, .recovery, .twoFactor, .privacySecurity, .syncContact],
+        .account: [.profile, .signature, .changePassword, .recovery, .twoFactor, .privacySecurity, .syncContact, .manualSync],
         .about: [.privacy, .terms, .openSource, .logout, .deleteAccount],
         .version : [.version]] as [Section: [Section.SubSection]
     ]
@@ -169,6 +172,14 @@ class SettingsGeneralViewController: UITableViewController{
                 cell.loader.startAnimating()
             }
             return cell
+        case .manualSync:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "settingsGeneralTap") as! GeneralTapTableCellView
+            cell.optionLabel.text = subsection.name
+            cell.goImageView.isHidden = true
+            cell.messageLabel.text = ""
+            cell.loader.stopAnimating()
+            cell.loader.isHidden = true
+            return cell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: "settingsGeneralTap") as! GeneralTapTableCellView
             cell.optionLabel.text = subsection.name
@@ -247,10 +258,31 @@ class SettingsGeneralViewController: UITableViewController{
                 break
             }
             syncContacts(indexPath: indexPath)
+        case .manualSync:
+            showManualSync()
         default:
             break
         }
         
+    }
+    
+    func showManualSync() {
+        let manualSyncPopover = GenericDualAnswerUIPopover()
+        manualSyncPopover.initialTitle = "Manual Sync"
+        manualSyncPopover.initialMessage = "You will lose all your data from this device upon proceeding. Would you like to proceed?"
+        manualSyncPopover.leftOption = String.localize("CANCEL")
+        manualSyncPopover.rightOption = String.localize("YES")
+        manualSyncPopover.onResponse = { [weak self] accept in
+            guard accept,
+                let weakSelf = self else {
+                    return
+            }
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let controller = storyboard.instantiateViewController(withIdentifier: "manualSyncViewController")  as! ManualSyncViewController
+            controller.myAccount = weakSelf.myAccount
+            weakSelf.present(controller, animated: true, completion: nil)
+        }
+        self.presentPopover(popover: manualSyncPopover, height: 205)
     }
     
     func syncContacts(indexPath: IndexPath){

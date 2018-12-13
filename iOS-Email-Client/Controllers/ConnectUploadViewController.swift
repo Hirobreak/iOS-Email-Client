@@ -66,7 +66,7 @@ class ConnectUploadViewController: UIViewController{
     func handleState(){
         switch(state){
         case .link:
-            linkAccept()
+            linkData.kind == .link ? linkAccept() : syncAccept()
         case .creatingDB(let deviceId):
             createDBFile(deviceId: deviceId)
         case .waiting:
@@ -95,6 +95,31 @@ class ConnectUploadViewController: UIViewController{
             }
             self.connectUIView.progressChange(value: self.PROGRESS_PREPARING_MAILBOX, message: "Preparing Mailbox", completion: {})
             self.linkData.deviceId = deviceId
+            self.state = .creatingDB(deviceId)
+            self.handleState()
+            self.scheduleWorker.start()
+        }
+        connectUIView.goBack = {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    func syncAccept() {
+        APIManager.syncAccept(randomId: linkData.randomId, account: myAccount) { (responseData) in
+            if case .Missing = responseData {
+                self.showErrorAlert(message: "Device was already rejected")
+                return
+            }
+            if case .BadRequest = responseData {
+                self.showErrorAlert(message: "Device already authorized")
+                return
+            }
+            guard case .Success = responseData,
+                let deviceId = self.linkData.deviceId else {
+                    self.presentProcessInterrupted()
+                    return
+            }
+            self.connectUIView.progressChange(value: self.PROGRESS_PREPARING_MAILBOX, message: "Preparing Mailbox", completion: {})
             self.state = .creatingDB(deviceId)
             self.handleState()
             self.scheduleWorker.start()

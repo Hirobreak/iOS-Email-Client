@@ -39,6 +39,8 @@ class EventHandler {
                 result.updateSideMenu = true
             case .LinkStart(let params):
                 result.linkStartData = params
+            case .SyncStart(let params):
+                result.syncStartData = params
             case .News(let feature):
                 result.feature = feature
             default:
@@ -116,6 +118,8 @@ class EventHandler {
             handleEventResponse(successfulEvent: true, result: .Empty)
         case Event.Link.start.rawValue:
             handleEventResponse(successfulEvent: true, result: .LinkStart(params))
+        case Event.Link.syncStart.rawValue:
+            handleEventResponse(successfulEvent: true, result: .SyncStart(params))
         default:
             finishCallback(nil, .Empty)
             break
@@ -202,6 +206,11 @@ class EventHandler {
                     return .Error
             }
             return .LinkStart(params)
+        case Event.Link.syncStart.rawValue:
+            guard let params = event["params"] as? [String: Any] else {
+                return .Error
+            }
+            return .SyncStart(params)
         case Event.Peer.passwordChange.rawValue:
             return .PasswordChange
         case Event.Link.removed.rawValue:
@@ -318,6 +327,13 @@ enum Event: Int32 {
         case success = 204
         case removed = 205
         case deny = 206
+        
+        case syncStart = 211
+        case syncAccept = 212
+        case syncBundle = 213
+        case syncSuccess = 214
+        case syncRemoved = 215
+        case syncDeny = 216
     }
     
     enum Peer: Int32 {
@@ -345,6 +361,7 @@ enum Event: Int32 {
     
     enum EventResult {
         case LinkStart([String: Any])
+        case SyncStart([String: Any])
         case Email(Email)
         case Feed(FeedItem)
         case ModifiedThreads([String])

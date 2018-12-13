@@ -386,6 +386,78 @@ class APIManager: SharedAPI {
 }
 
 extension APIManager {
+    class func syncBegin(account: Account, completion: @escaping ((ResponseData) -> Void)){
+        let url = "\(self.baseUrl)/sync/begin"
+        let headers = ["Authorization": "Bearer \(account.jwt)",
+            versionHeader: apiVersion]
+        let params = [
+            "version": 1
+            ] as [String: Any]
+        Alamofire.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers).responseString { response in
+            let responseData = handleResponse(response, satisfy: .success)
+            self.authorizationRequest(responseData: responseData, account: account) { (refreshResponseData) in
+                if let refreshData = refreshResponseData {
+                    completion(refreshData)
+                    return
+                }
+                self.syncBegin(account: account, completion: completion)
+            }
+        }
+    }
+    
+    class func getSyncStatus(account: Account, completion: @escaping ((ResponseData) -> Void)){
+        let url = "\(self.baseUrl)/sync/begin"
+        let headers = ["Authorization": "Bearer \(account.jwt)",
+            versionHeader: apiVersion]
+        Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+            let responseData = handleResponse(response)
+            self.authorizationRequest(responseData: responseData, account: account) { (refreshResponseData) in
+                if let refreshData = refreshResponseData {
+                    completion(refreshData)
+                    return
+                }
+                self.getSyncStatus(account: account, completion: completion)
+            }
+        }
+    }
+    
+    class func syncAccept(randomId: String, account: Account, completion: @escaping ((ResponseData) -> Void)) {
+        let url = "\(self.baseUrl)/link/accept"
+        let headers = ["Authorization": "Bearer \(account.jwt)",
+            versionHeader: apiVersion]
+        let params = ["randomId": randomId] as [String : Any]
+        Alamofire.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers).responseString { (response) in
+            let responseData = handleResponse(response, satisfy: .success)
+            self.authorizationRequest(responseData: responseData, account: account) { (refreshResponseData) in
+                if let refreshData = refreshResponseData {
+                    completion(refreshData)
+                    return
+                }
+                self.linkAccept(randomId: randomId, account: account, completion: completion)
+            }
+        }
+    }
+    
+    class func syncDeny(randomId: String, account: Account, completion: @escaping ((ResponseData) -> Void)) {
+        let url = "\(self.baseUrl)/link/deny"
+        let headers = ["Authorization": "Bearer \(account.jwt)",
+            versionHeader: apiVersion]
+        let params = ["randomId": randomId] as [String : Any]
+        Alamofire.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers).responseString { (response) in
+            let responseData = handleResponse(response, satisfy: .success)
+            self.authorizationRequest(responseData: responseData, account: account) { (refreshResponseData) in
+                if let refreshData = refreshResponseData {
+                    completion(refreshData)
+                    return
+                }
+                self.linkDeny(randomId: randomId, account: account, completion: completion)
+            }
+        }
+    }
+    
+}
+
+extension APIManager {
     class func registerFile(parameters: [String: Any], token: String, completion: @escaping ((ResponseData) -> Void)){
         let url = "\(self.fileServiceUrl)/file/upload"
         let headers = ["Authorization": "Bearer \(token)"]
@@ -627,6 +699,7 @@ extension APIManager {
 
 extension APIManager {
     class func uploadLinkDBFile(dbFile: InputStream, randomId: String, size: Int, token: String, progressCallback: @escaping ((Double) -> Void), completion: @escaping ((ResponseData) -> Void)){
+        print(token)
         let url = "\(self.linkUrl)/userdata"
         let headers = [
             "Authorization": "Bearer \(token)",

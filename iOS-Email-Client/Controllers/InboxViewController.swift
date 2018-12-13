@@ -334,6 +334,8 @@ extension InboxViewController: WebSocketManagerDelegate {
         switch(result){
         case .LinkStart(let data):
             self.handleLinkStart(data: data)
+        case .SyncStart(let data):
+            self.handleSyncStart(data: data)
         case .NewEvent:
             self.getPendingEvents(nil)
         case .PasswordChange:
@@ -366,6 +368,13 @@ extension InboxViewController: WebSocketManagerDelegate {
     
     func handleLinkStart(data: [String: Any]){
         guard let linkData = LinkData.fromDictionary(data) else {
+            return
+        }
+        self.presentLinkDevicePopover(linkData: linkData)
+    }
+    
+    func handleSyncStart(data: [String: Any]){
+        guard let linkData = LinkData.fromDictionary(data, kind: .sync) else {
             return
         }
         self.presentLinkDevicePopover(linkData: linkData)
@@ -440,6 +449,8 @@ extension InboxViewController {
         
         if !result.linkStartData.isEmpty {
             handleLinkStart(data: result.linkStartData)
+        } else if !result.syncStartData.isEmpty {
+            handleSyncStart(data: result.syncStartData)
         }
         
         if result.updateSideMenu {

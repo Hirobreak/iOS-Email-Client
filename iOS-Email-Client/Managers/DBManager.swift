@@ -26,6 +26,22 @@ class DBManager: SharedDB {
         }
     }
     
+    class func clearMailbox(){
+        let realm = try! Realm()
+        
+        try! realm.write {
+            realm.delete(realm.objects(Contact.self))
+            realm.delete(realm.objects(Email.self))
+            realm.delete(realm.objects(FeedItem.self))
+            realm.delete(realm.objects(EmailContact.self))
+            realm.delete(realm.objects(Label.self))
+            realm.delete(realm.objects(File.self))
+            realm.delete(realm.objects(FileKey.self))
+            realm.delete(realm.objects(QueueItem.self))
+            realm.delete(realm.objects(DummySession.self))
+        }
+    }
+    
     class func destroy(){
         let realm = try! Realm()
         

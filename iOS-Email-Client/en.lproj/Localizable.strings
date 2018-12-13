@@ -166,6 +166,7 @@
 "YES" = "Yes";
 "WARNING" = "Warning";
 "Q_SIGNOUT_2FA" = "Since this is your last signed in device, 2FA will be turned off. Do you want to turn off 2FA and sign out?";
+"MANUAL_SYNC" = "Sync mailbox with another device";
 
 "ACCOUNT" = "ACCOUNT";
 "NOTIFICATIONS" = "NOTIFICATIONS";
