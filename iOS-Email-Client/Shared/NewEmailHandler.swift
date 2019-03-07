@@ -45,7 +45,7 @@ class NewEmailHandler {
         }
         let event = NewEmail.init(params: params)
         
-        if let email = self.database.getMailByKey(key: event.metadataKey) {
+        if let email = self.database.getMailByKey(key: event.metadataKey, account: myAccount) {
             if(isMeARecipient(email: email, account: myAccount)){
                 self.database.addRemoveLabelsFromEmail(email, addedLabelIds: [SystemLabel.inbox.id], removedLabelIds: [])
                 completion(Result(email: email))
@@ -84,7 +84,7 @@ class NewEmailHandler {
             }
             
             guard !FileUtils.existBodyFile(username: myAccount.username, metadataKey: "\(event.metadataKey)") else{
-                if let email = self.database.getMailByKey(key: event.metadataKey) {
+                if let email = self.database.getMailByKey(key: event.metadataKey, account: myAccount) {
                     completion(Result(email: email))
                     return
                 }
@@ -94,6 +94,7 @@ class NewEmailHandler {
             
             let contentPreview = self.getContentPreview(content: content)
             let email = Email()
+            email.account = myAccount
             email.threadId = event.threadId
             email.subject = event.subject
             email.key = event.metadataKey

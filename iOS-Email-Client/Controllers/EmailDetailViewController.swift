@@ -606,7 +606,7 @@ extension EmailDetailViewController: NavigationToolbarDelegate {
             weakSelf.navigationController?.popViewController(animated: true)
             
             let eventData = EventData.Peer.ThreadDeleted(threadIds: [weakSelf.emailData.threadId])
-            DBManager.createQueueItem(params: ["cmd": Event.Peer.threadsDeleted.rawValue, "params": eventData.asDictionary()])
+            DBManager.createQueueItem(params: ["cmd": Event.Peer.threadsDeleted.rawValue, "params": eventData.asDictionary()], account: weakSelf.myAccount)
         }
         self.presentPopover(popover: popover, height: 200)
     }
@@ -623,7 +623,7 @@ extension EmailDetailViewController: NavigationToolbarDelegate {
                         "unread": unread ? 1 : 0,
                         "threadIds": [emailData.threadId]
             ]] as [String : Any]
-        DBManager.createQueueItem(params: params)
+        DBManager.createQueueItem(params: params, account: myAccount)
     }
     
     func onMoreOptions() {
@@ -736,7 +736,7 @@ extension EmailDetailViewController: DetailMoreOptionsViewDelegate {
         DBManager.delete(email)
         if (triggerEvent) {
             let eventData = EventData.Peer.EmailDeleted(metadataKeys: [emailKey])
-            DBManager.createQueueItem(params: ["cmd": Event.Peer.emailsDeleted.rawValue, "params": eventData.asDictionary()])
+            DBManager.createQueueItem(params: ["cmd": Event.Peer.emailsDeleted.rawValue, "params": eventData.asDictionary()], account: myAccount)
         }
     }
     
@@ -747,7 +747,7 @@ extension EmailDetailViewController: DetailMoreOptionsViewDelegate {
         DBManager.addRemoveLabelsFromEmail(email, addedLabelIds: [SystemLabel.trash.id], removedLabelIds: [])
         if (triggerEvent) {
             let eventData = EventData.Peer.EmailLabels(metadataKeys: [emailKey], labelsAdded: changedLabels.0, labelsRemoved: changedLabels.1)
-            DBManager.createQueueItem(params: ["cmd": Event.Peer.emailsLabels.rawValue, "params": eventData.asDictionary()])
+            DBManager.createQueueItem(params: ["cmd": Event.Peer.emailsLabels.rawValue, "params": eventData.asDictionary()], account: myAccount)
         }
     }
     
@@ -775,7 +775,7 @@ extension EmailDetailViewController: DetailMoreOptionsViewDelegate {
                             "metadataKeys": emailKeys
                 ]] as [String : Any]
             self.navigationController?.popViewController(animated: true)
-            DBManager.createQueueItem(params: params)
+            DBManager.createQueueItem(params: params, account: myAccount)
         }
         self.navigationController?.popViewController(animated: true)
     }
@@ -796,7 +796,7 @@ extension EmailDetailViewController: DetailMoreOptionsViewDelegate {
         let changedLabels = getLabelNames(added: addLabel, removed: removeLabel)
         DBManager.addRemoveLabelsFromEmail(email, addedLabelIds: addLabel, removedLabelIds: removeLabel)
         let eventData = EventData.Peer.EmailLabels(metadataKeys: [emailKey], labelsAdded: changedLabels.0, labelsRemoved: changedLabels.1)
-        DBManager.createQueueItem(params: ["cmd": Event.Peer.emailsLabels.rawValue, "params": eventData.asDictionary()])
+        DBManager.createQueueItem(params: ["cmd": Event.Peer.emailsLabels.rawValue, "params": eventData.asDictionary()], account: myAccount)
     }
     
     func onUnsendPress() {
@@ -1002,7 +1002,7 @@ extension EmailDetailViewController : LabelsUIPopoverDelegate{
         }
         
         let eventData = EventData.Peer.ThreadLabels(threadIds: [emailData.threadId], labelsAdded: changedLabels.0, labelsRemoved: changedLabels.1)
-        DBManager.createQueueItem(params: ["params": eventData.asDictionary(), "cmd": Event.Peer.threadsLabels.rawValue])
+        DBManager.createQueueItem(params: ["params": eventData.asDictionary(), "cmd": Event.Peer.threadsLabels.rawValue], account: myAccount)
     }
     
     func getLabelNames(added: [Int], removed: [Int]) -> ([String], [String]){
