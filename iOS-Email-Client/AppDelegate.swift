@@ -571,7 +571,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
-        //UIApplication.shared.applicationIconBadgeNumber = DBManager.getUnreadMailsCounter(from: SystemLabel.inbox.id)
+        RequestManager.shared.clearPending()
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -646,7 +646,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
         
-        guard let inboxVC = getInboxVC() else {
+        guard let inboxVC = getInboxVC(),
+            let accountUser = (userInfo["account"] as? String ?? userInfo["recipientId"] as? String) else {
                 return
         }
         DBManager.refresh()
@@ -658,14 +659,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }
             let linkData = LinkData(deviceName: "", deviceType: 1, randomId: randomId, kind: .link)
             linkData.version = Int(version)!
-            inboxVC.onAcceptLinkDevice(linkData: linkData) {
+            inboxVC.onAcceptLinkDevice(username: accountUser, linkData: linkData) {
                 completionHandler()
             }
         case "LINK_DENY":
             guard let randomId = userInfo["randomId"] as? String else {
                 break
             }
-            inboxVC.onCancelLinkDevice(linkData: LinkData(deviceName: "", deviceType: 1, randomId: randomId, kind: .link)) {
+            inboxVC.onCancelLinkDevice(username: accountUser, linkData: LinkData(deviceName: "", deviceType: 1, randomId: randomId, kind: .link)) {
                 completionHandler()
             }
         case "SYNC_ACCEPT":
@@ -679,14 +680,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let linkData = LinkData(deviceName: deviceName, deviceType: Int(deviceType)!, randomId: randomId, kind: .sync)
             linkData.version = Int(version)!
             linkData.deviceId = Int32(deviceId)!
-            inboxVC.onAcceptLinkDevice(linkData: linkData) {
+            inboxVC.onAcceptLinkDevice(username: accountUser, linkData: linkData) {
                 completionHandler()
             }
         case "SYNC_DENY":
             guard let randomId = userInfo["randomId"] as? String else {
                 break
             }
-            inboxVC.onCancelLinkDevice(linkData: LinkData(deviceName: "", deviceType: 1, randomId: randomId, kind: .sync)) {
+            inboxVC.onCancelLinkDevice(username: accountUser, linkData: LinkData(deviceName: "", deviceType: 1, randomId: randomId, kind: .sync)) {
                 completionHandler()
             }
         case "EMAIL_MARK":
@@ -694,7 +695,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 let key = Int(keyString) else {
                 return
             }
-            inboxVC.markAsRead(emailKey: key) {
+            inboxVC.markAsRead(username: accountUser, emailKey: key) {
                 UIApplication.shared.applicationIconBadgeNumber = DBManager.getUnreadMailsCounter(from: SystemLabel.inbox.id, account: inboxVC.myAccount)
                 completionHandler()
             }
@@ -704,7 +705,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 let key = Int(keyString) else {
                     return
             }
-            inboxVC.reply(emailKey: key) {
+            inboxVC.reply(username: accountUser, emailKey: key) {
                 completionHandler()
             }
             break
@@ -713,29 +714,28 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 let key = Int(keyString) else {
                     return
             }
-            inboxVC.moveToTrash(emailKey: key) {
+            inboxVC.moveToTrash(username: accountUser, emailKey: key) {
                 completionHandler()
             }
             break
         default:
             if let threadId = userInfo["threadId"] as? String {
-                inboxVC.goToEmailDetail(threadId: threadId)
+                inboxVC.openThread(username: accountUser, threadId: threadId)
             }
         }
-        
     }
 }
 
 extension AppDelegate: MessagingDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        guard let inboxVC = getInboxVC() else {
+        guard let accountUser = userInfo["account"] as? String else {
                 return
         }
-        inboxVC.getPendingEvents(nil) { (success) in
-            UIApplication.shared.applicationIconBadgeNumber = DBManager.getUnreadMailsCounter(from: SystemLabel.inbox.id)
+        RequestManager.shared.accountCompletions[accountUser] = { _ in
             completionHandler(.newData)
         }
+        RequestManager.shared.getAccountEvents(username: accountUser)
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
