@@ -121,7 +121,7 @@ class SettingsGeneralViewController: UIViewController{
     
     func loadData(){
         let myDevice = Device.createActiveDevice(deviceId: myAccount.deviceId)
-        APIManager.getSettings(account: myAccount) { (responseData) in
+        APIManager.getSettings(token: myAccount.jwt) { (responseData) in
             if case .Unauthorized = responseData {
                 self.logout(account: self.myAccount)
                 return

@@ -145,7 +145,7 @@ class SendMailAsyncTask {
             completion(ResponseData.Error(CriptextError(message: String.localize("UNABLE_HANDLE_MAIL"))))
             return
         }
-        apiManager.duplicateFiles(filetokens: self.duplicates, account: myAccount, queue: queue) { (responseData) in
+        apiManager.duplicateFiles(filetokens: self.duplicates, token: myAccount.jwt, queue: queue) { (responseData) in
             guard case let .SuccessDictionary(response) = responseData,
                 let duplicates = response["duplicates"] as? [String: Any],
                 let fileParams = SharedDB.duplicateFiles(key: self.emailKey, duplicates: duplicates) else {
@@ -177,7 +177,7 @@ class SendMailAsyncTask {
             "knownAddresses": keysPayload.1
             ] as [String : Any]
         
-        apiManager.getKeysRequest(params, account: myAccount, queue: queue) { responseData in
+        apiManager.getKeysRequest(params, token: myAccount.jwt, queue: queue) { responseData in
             guard let myAccount = SharedDB.getAccountByUsername(self.username) else {
                 return
             }
@@ -342,7 +342,7 @@ class SendMailAsyncTask {
         if let thread = self.threadId {
             requestParams["threadId"] = thread
         }
-        apiManager.postMailRequest(requestParams, account: myAccount, queue: queue) { responseData in
+        apiManager.postMailRequest(requestParams, token: myAccount.jwt, queue: queue) { responseData in
             if case .TooManyRequests = responseData {
                 DispatchQueue.main.async {
                     self.setEmailAsFailed()

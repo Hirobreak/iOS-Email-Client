@@ -248,7 +248,7 @@ class SecurityPrivacyViewController: UITableViewController {
         let initialValue = self.generalData.hasEmailReceipts
         self.generalData.hasEmailReceipts = enable
         self.toggleOptions()
-        APIManager.setReadReceipts(enable: enable, account: myAccount) { (responseData) in
+        APIManager.setReadReceipts(enable: enable, token: myAccount.jwt) { (responseData) in
             sender?.isEnabled = true
             guard case .Success = responseData else {
                 self.showAlert(String.localize("SOMETHING_WRONG"), message: String.localize("UNABLE_RECEIPTS"), style: .alert)
@@ -266,7 +266,7 @@ class SecurityPrivacyViewController: UITableViewController {
         }
         let initialValue = self.generalData.isTwoFactor
         self.generalData.isTwoFactor = enable
-        APIManager.setTwoFactor(isOn: enable, account: myAccount) { (responseData) in
+        APIManager.setTwoFactor(isOn: enable, token: myAccount.jwt) { (responseData) in
             if case .Conflicts = responseData {
                 self.presentRecoveryPopover()
                 return
