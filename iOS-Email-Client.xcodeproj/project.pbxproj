@@ -367,6 +367,7 @@
 		A7B17A8A2257C93600927102 /* BackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B17A892257C93600927102 /* BackupManager.swift */; };
 		A7B5B572223B0CD20083E467 /* AccountCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B5B571223B0CD20083E467 /* AccountCollectionCell.swift */; };
 		A7B5B574223B0D650083E467 /* AccountCollectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A7B5B573223B0D650083E467 /* AccountCollectionCell.xib */; };
+		A7B96A72228E1A4F00C636D4 /* EventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B96A71228E1A4F00C636D4 /* EventParser.swift */; };
 		A7C2E5E82232E0C80026B566 /* AccountContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7385F4022303CF0005CB38D /* AccountContact.swift */; };
 		A7C2E5E92232E0C90026B566 /* AccountContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7385F4022303CF0005CB38D /* AccountContact.swift */; };
 		A7C3589E21B19AE300386295 /* GenericAlertUIPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D33C2212C745A00045B09 /* GenericAlertUIPopover.swift */; };
@@ -826,6 +827,7 @@
 		A7B17A892257C93600927102 /* BackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupManager.swift; sourceTree = "<group>"; };
 		A7B5B571223B0CD20083E467 /* AccountCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCollectionCell.swift; sourceTree = "<group>"; };
 		A7B5B573223B0D650083E467 /* AccountCollectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountCollectionCell.xib; sourceTree = "<group>"; };
+		A7B96A71228E1A4F00C636D4 /* EventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventParser.swift; sourceTree = "<group>"; };
 		A7CC38042190D9D900C8355A /* NotificationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7CC38062190D9DA00C8355A /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		A7CC38082190D9DA00C8355A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1168,6 +1170,7 @@
 				7C5FD825205C857C000E5F14 /* Utils.swift */,
 				A718BE6A22272970008CAA72 /* UIUtils.swift */,
 				A741B9F52268DD00001BB19C /* DateString.swift */,
+				A7B96A71228E1A4F00C636D4 /* EventParser.swift */,
 			);
 			path = Libs;
 			sourceTree = "<group>";
@@ -1989,6 +1992,7 @@
 				7C34E5FB20470D2100E71906 /* EmailDetailData.swift in Sources */,
 				A764443421768AB7005304DA /* ProgressAnimatedUIView.swift in Sources */,
 				7C4D33CD212CA23100045B09 /* GeneralSettingsData.swift in Sources */,
+				A7B96A72228E1A4F00C636D4 /* EventParser.swift in Sources */,
 				D661A23C21EFDB95002A6BDD /* DLRadioButton.m in Sources */,
 				7C5FD826205C857C000E5F14 /* Utils.swift in Sources */,
 				7CB60A7B20F81A5600C9090C /* PlainContactTableViewCell.swift in Sources */,
@@ -2742,7 +2746,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "iOS-Email-Client/Libs/iOS-Email-Client-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/iOS-Email-Client";
 			};
@@ -2779,7 +2783,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "iOS-Email-Client/Libs/iOS-Email-Client-Bridging-Header.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/iOS-Email-Client";
 			};
@@ -2921,7 +2925,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "iOS-Email-Client/Libs/iOS-Email-Client-Bridging-Header.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/iOS-Email-Client";
 			};
