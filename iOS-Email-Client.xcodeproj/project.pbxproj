@@ -236,6 +236,7 @@
 		7CB60A7F20F94BA800C9090C /* FileManagerSpyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB60A7E20F94BA800C9090C /* FileManagerSpyDelegate.swift */; };
 		7CB60A8320FA526C00C9090C /* criptextlogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CB60A8220FA526B00C9090C /* criptextlogo.png */; };
 		7CB60A8520FD306300C9090C /* CreateCustomJSONFileAsyncTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB60A8420FD306200C9090C /* CreateCustomJSONFileAsyncTask.swift */; };
+		7CB8DBE324A66F2500714BCA /* BackupDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB8DBE224A66F2500714BCA /* BackupDBManager.swift */; };
 		7CBD20C12024BCD700D70B87 /* NewLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBD20C02024BCD700D70B87 /* NewLoginViewController.swift */; };
 		7CBD20C52025141F00D70B87 /* GradientUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBD20C42025141F00D70B87 /* GradientUIView.swift */; };
 		7CBD20C7202A367B00D70B87 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBD20C6202A367B00D70B87 /* SignUpViewController.swift */; };
@@ -924,6 +925,7 @@
 		7CB60A7E20F94BA800C9090C /* FileManagerSpyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerSpyDelegate.swift; sourceTree = "<group>"; };
 		7CB60A8220FA526B00C9090C /* criptextlogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = criptextlogo.png; sourceTree = "<group>"; };
 		7CB60A8420FD306200C9090C /* CreateCustomJSONFileAsyncTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomJSONFileAsyncTask.swift; sourceTree = "<group>"; };
+		7CB8DBE224A66F2500714BCA /* BackupDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupDBManager.swift; sourceTree = "<group>"; };
 		7CBD20C02024BCD700D70B87 /* NewLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLoginViewController.swift; sourceTree = "<group>"; };
 		7CBD20C42025141F00D70B87 /* GradientUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientUIView.swift; sourceTree = "<group>"; };
 		7CBD20C6202A367B00D70B87 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
@@ -1307,6 +1309,7 @@
 				A723254421CBE257003CF78D /* ThemeManager.swift */,
 				A7385F3E2230272E005CB38D /* RequestManager.swift */,
 				A7B17A892257C93600927102 /* BackupManager.swift */,
+				7CB8DBE224A66F2500714BCA /* BackupDBManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2398,6 +2401,7 @@
 				A7CC385D21934E1200C8355A /* DBAxolotl.swift in Sources */,
 				A742720522550A1F006D10C9 /* BackupViewController.swift in Sources */,
 				A723254521CBE257003CF78D /* ThemeManager.swift in Sources */,
+				7CB8DBE324A66F2500714BCA /* BackupDBManager.swift in Sources */,
 				7CE1F9FE2478788300D14352 /* PlusViewController.swift in Sources */,
 				A7115EA12316F84600EBECE7 /* AccountOptionsInterface.swift in Sources */,
 				7CAC1CEC20F6AA29004A50C6 /* CriptextSnackbar.swift in Sources */,

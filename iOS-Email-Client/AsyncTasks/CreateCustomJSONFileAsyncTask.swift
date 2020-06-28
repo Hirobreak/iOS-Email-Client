@@ -42,11 +42,51 @@ class CreateCustomJSONFileAsyncTask {
     func start(progressHandler: @escaping ((Int) -> Void), completion: @escaping ((Error?, URL?) -> Void)){
         try? FileManager.default.removeItem(at: fileURL)
         DispatchQueue.global().async {
-            self.createDBFile(progressHandler: progressHandler, completion: completion)
+            let initialDB = self.createInitialDBFile()
+            let result = self.createDBFile(progressHandler: progressHandler)
+            
+            DispatchQueue.main.async {
+                completion(result.0, result.1)
+            }
         }
     }
     
-    private func createDBFile(progressHandler: @escaping ((Int) -> Void), completion: @escaping ((Error?, URL?) -> Void)){
+    private func createInitialDBFile() -> [Int] {
+        let account = DBManager.getAccountById(self.accountId)
+        
+        let backupDBManager = BackupDBManager()
+        
+        let emails = backupDBManager.getThreads(from: SystemLabel.inbox.id, since: Date(), account: account!)
+        
+        var dispatchedContacts = [String: Int]()
+        var dispatchedLabels = [String: Int]()
+        var dispatchedEmails = [Int: Int]()
+        
+        emails.map({$0.getContacts()}).flatMap({$0}).enumerated().forEach {
+            guard dispatchedContacts[$1.email] == nil else {
+                return
+            }
+            dispatchedContacts[$1.email] = $0 + 1
+            handleRow($1.toDictionary(id: $0 + 1))
+        }
+        emails.map({$0.labels}).flatMap({$0}).enumerated().forEach {
+            guard dispatchedLabels[$1.uuid] == nil && SystemLabel(rawValue: $1.id) == nil  else {
+                return
+            }
+            dispatchedLabels[$1.uuid] = $0 + 1
+            handleRow($1.toDictionary())
+        }
+        emails.enumerated().forEach {
+            dispatchedEmails[$1.key] = $0 + 1
+            let dictionary = $1.toDictionary(
+                id: $0 + 1,
+                emailBody: FileUtils.getBodyFromFile(account: account!, metadataKey: "\($1.key)"),
+                headers: FileUtils.getHeaderFromFile(account: account!, metadataKey: "\($1.key)"))
+            handleRow(dictionary)
+        }
+    }
+    
+    private func createDBFile(progressHandler: @escaping ((Int) -> Void)) -> (Error?, URL?){
         let account = DBManager.getAccountById(self.accountId)
         let results = DBManager.retrieveWholeDB(account: account!)
         var progress = handleProgress(progress: 0, total: results.total, step: results.step, progressHandler: progressHandler)
@@ -115,9 +155,8 @@ class CreateCustomJSONFileAsyncTask {
             progress = handleProgress(progress: progress, total: results.total, step: results.step, progressHandler: progressHandler)
             customDomainId += 1
         }
-        DispatchQueue.main.async {
-            completion(nil, self.fileURL)
-        }
+        
+        return (nil, self.fileURL)
     }
     
     private func handleRow(_ row: [String: Any], appendNewLine: Bool = true){
