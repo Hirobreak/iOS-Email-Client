@@ -27,7 +27,7 @@ class BackupDBManager {
     }
     
     private func customDistinctEmailThreads(emails: Results<Email>, label: Int, limit: Int, threadIds: [String] = [], myEmail: String) -> [Email] {
-        var emails = [Email]()
+        var myEmails = [Email]()
         var myThreadIds = Set<String>(threadIds)
         for email in emails {
             guard myThreadIds.count < limit else {
@@ -41,9 +41,9 @@ class BackupDBManager {
             guard !threadEmails.isEmpty else {
                 continue
             }
-            emails.append(contentsOf: threadEmails)
+            myEmails.append(contentsOf: threadEmails)
             myThreadIds.insert(email.threadId)
         }
-        return emails
+        return myEmails
     }
 }

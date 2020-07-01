@@ -11,4 +11,5 @@ import Foundation
 struct LinkDBMaps {
     var emails: [Int: Int]
     var contacts: [Int: String]
+    var labels: [Int: Int]
 }

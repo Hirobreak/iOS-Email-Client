@@ -91,6 +91,7 @@
 		7C049F8920879CD5007A6213 /* LabelsUIPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C049F8820879CD4007A6213 /* LabelsUIPopover.swift */; };
 		7C049F8D2087AB5F007A6213 /* LabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C049F8C2087AB5F007A6213 /* LabelTableViewCell.swift */; };
 		7C049F8F2087AB8A007A6213 /* LabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C049F8E2087AB8A007A6213 /* LabelTableViewCell.xib */; };
+		7C0BA52F24AB9BAA000F83D4 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C0BA52E24AB9BAA000F83D4 /* Zip.framework */; };
 		7C13D8AB2080FCCD008F1395 /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C13D8AA2080FCCD008F1395 /* WebSocketManager.swift */; };
 		7C13D8AD20810CFD008F1395 /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C13D8AC20810CFD008F1395 /* EventHandler.swift */; };
 		7C13D8AF20810D75008F1395 /* SignalHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C13D8AE20810D75008F1395 /* SignalHandler.swift */; };
@@ -561,16 +562,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		7C354A2224803A3A0083EE41 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A7CC38102190D9DA00C8355A /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -766,6 +757,7 @@
 		7C049F8820879CD4007A6213 /* LabelsUIPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelsUIPopover.swift; sourceTree = "<group>"; };
 		7C049F8C2087AB5F007A6213 /* LabelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell.swift; sourceTree = "<group>"; };
 		7C049F8E2087AB8A007A6213 /* LabelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabelTableViewCell.xib; sourceTree = "<group>"; };
+		7C0BA52E24AB9BAA000F83D4 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
 		7C13D8AA2080FCCD008F1395 /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		7C13D8AC20810CFD008F1395 /* EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHandler.swift; sourceTree = "<group>"; };
 		7C13D8AE20810D75008F1395 /* SignalHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalHandler.swift; sourceTree = "<group>"; };
@@ -1179,6 +1171,7 @@
 				7C3549E72480322D0083EE41 /* libsqlite3.tbd in Frameworks */,
 				7C3549E6248032280083EE41 /* libc++.tbd in Frameworks */,
 				A77C30A921A4EC240031E219 /* PasscodeLock.framework in Frameworks */,
+				7C0BA52F24AB9BAA000F83D4 /* Zip.framework in Frameworks */,
 				A7FFCF8F2182621E00FFFDFF /* TLPhotoPicker.framework in Frameworks */,
 				A7F3027C216EBABD00676DD2 /* Gzip.framework in Frameworks */,
 				7C354A40248052490083EE41 /* PromisesObjC.framework in Frameworks */,
@@ -1260,6 +1253,7 @@
 		2962C69A939AA368B015D288 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7C0BA52E24AB9BAA000F83D4 /* Zip.framework */,
 				7C3549E3248031E20083EE41 /* StoreKit.framework */,
 				A7EBB10F22CABFCF00689760 /* Starscream.framework */,
 				A77C30A821A4EC240031E219 /* PasscodeLock.framework */,
@@ -1890,7 +1884,6 @@
 				7C4D4FE9203CBD3A00DF6E4E /* Run Script Framework */,
 				7CD968B62139A2F9002D4833 /* ShellScript */,
 				A7CC38102190D9DA00C8355A /* Embed App Extensions */,
-				7C354A2224803A3A0083EE41 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2218,6 +2211,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/TLPhotoPicker.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PasscodeLock.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Starscream.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 			);
 			name = "Run Script Framework";
 			outputPaths = (
@@ -2246,6 +2240,7 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/TLPhotoPicker.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PasscodeLock.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Starscream.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Zip.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

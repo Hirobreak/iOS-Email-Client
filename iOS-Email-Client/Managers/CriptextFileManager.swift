@@ -358,6 +358,11 @@ class CriptextFileManager {
         return documentsURL.appendingPathComponent(name)
     }
     
+    static func getURLForFile(name: String, folder: String) -> URL {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return documentsURL.appendingPathComponent(name)
+    }
+    
     static func deleteFile(path: String) {
         let url = URL(fileURLWithPath: path)
         try? FileManager.default.removeItem(at: url)

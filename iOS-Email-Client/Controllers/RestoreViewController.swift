@@ -125,19 +125,8 @@ extension RestoreViewController: RestoreDelegate {
     
     func restoreFile(password: String?) {
         if(self.isLocal){
-            var filePath = self.localUrl.path
-            if let pass = password,
-                let encryptPath = AESCipher.streamEncrypt(path: filePath, outputName: StaticFile.decryptedDB.name, bundle: AESCipher.KeyBundle(password: pass, salt: nil), ivData: nil, operation: kCCDecrypt) {
-                contentView.setRestoring(isLocal: self.isLocal)
-                self.contentView.animateProgress(Double(10), 3.0, completion: {})
-                filePath = encryptPath
-            }
-            guard let decompressedPath = try? AESCipher.compressFile(path: filePath, outputName: StaticFile.unzippedDB.name, compress: false) else {
-                contentView.setError(isLocal: self.isLocal, isEncrypted: self.isEncrypted)
-                return
-            }
-            
-            let restoreTask = RestoreDBAsyncTask(path: decompressedPath, accountId: myAccount.compoundKey, initialProgress: 10)
+            DBManager.clearMailbox(account: myAccount)
+            let restoreTask = RestoreDBAsyncTask(path: self.localUrl.path, accountId: myAccount.compoundKey, initialProgress: 10)
             restoreTask.start(progressHandler: { (progress) in
                 self.contentView.animateProgress(Double(progress), 3.0, completion: {})
             }) {_ in
@@ -149,7 +138,7 @@ extension RestoreViewController: RestoreDelegate {
                 return
             }
             
-            guard let decompressedPath = try? AESCipher.compressFile(path: myUrl.path, outputName: StaticFile.unzippedDB.name, compress: false) else {
+            guard let decompressedPath = try? AESCipher.compressFile(path: myUrl.path, outputName: StaticFile.restoreUnzip.name, compress: false) else {
                 contentView.setError(isLocal: self.isLocal, isEncrypted: self.isEncrypted)
                 return
             }

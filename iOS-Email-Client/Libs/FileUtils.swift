@@ -98,4 +98,13 @@ class FileUtils{
             .appendingPathComponent("header.txt")
     }
     
+    static func getBackupUrl(name: String, folder: String) -> URL {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return documentsURL.appendingPathComponent(folder).appendingPathComponent(name)
+    }
+    
+    static func getRestoreFolderUrl(name: String) -> URL {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return documentsURL.appendingPathComponent(name)
+    }
 }

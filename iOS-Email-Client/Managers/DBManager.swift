@@ -107,17 +107,22 @@ class DBManager: SharedDB {
         }
     }
     
-    class func retrieveWholeDB(account: Account) -> LinkDBSource {
+    class func retrieveWholeDB(account: Account, emailKeys: [Int]) -> LinkDBSource {
         let realm = try! Realm()
         let contacts = realm.objects(Contact.self)
         let labels = realm.objects(Label.self).filter("type == 'custom' AND account.compoundKey == '\(account.compoundKey)'")
-        let emails = realm.objects(Email.self).filter("messageId != '' AND account.compoundKey == '\(account.compoundKey)'")
-        let emailContacts = realm.objects(EmailContact.self).filter("email.account.compoundKey == '\(account.compoundKey)' AND email.delivered != \(Email.Status.sending.rawValue) AND email.delivered != \(Email.Status.fail.rawValue) AND NOT (ANY email.labels.id == \(SystemLabel.draft.id))")
+        let emails = realm.objects(Email.self).filter("messageId != '' AND account.compoundKey == '\(account.compoundKey)' AND !(key IN %@)", emailKeys)
+        let emailContacts = realm.objects(EmailContact.self).filter("email.account.compoundKey == '\(account.compoundKey)' AND email.delivered != \(Email.Status.sending.rawValue) AND email.delivered != \(Email.Status.fail.rawValue) AND NOT (ANY email.labels.id == \(SystemLabel.draft.id)) AND !( email.key IN %@)", emailKeys)
+        let total = contacts.count + labels.count + 3 * emails.count + emailContacts.count
+        let step = total * 7 / 100
+        return LinkDBSource(contacts: contacts, labels: labels, emails: emails, emailContacts: emailContacts, total: total, step: step)
+    }
+    
+    class func retrieveAliasesAndDomains(account: Account) -> (Results<Alias>, Results<CustomDomain>) {
+        let realm = try! Realm()
         let aliases = realm.objects(Alias.self).filter("account.compoundKey == '\(account.compoundKey)'")
         let customDomains = realm.objects(CustomDomain.self).filter("account.compoundKey == '\(account.compoundKey)'")
-        let total = contacts.count + labels.count + 3 * emails.count + emailContacts.count + aliases.count + customDomains.count
-        let step = total * 7 / 100
-        return LinkDBSource(contacts: contacts, labels: labels, emails: emails, emailContacts: emailContacts, aliases: aliases, customDomains: customDomains, total: total, step: step)
+        return (aliases, customDomains)
     }
     
     struct LinkDBSource {
@@ -125,8 +130,6 @@ class DBManager: SharedDB {
         let labels: Results<Label>
         let emails: Results<Email>
         let emailContacts: Results<EmailContact>
-        let aliases: Results<Alias>
-        let customDomains: Results<CustomDomain>
         let total: Int
         let step: Int
     }

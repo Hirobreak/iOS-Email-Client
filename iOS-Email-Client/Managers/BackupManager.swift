@@ -74,7 +74,7 @@ final class BackupManager {
         let workItem = DispatchWorkItem {
             self.runningBackups.insert(accountId)
             let createDBTask = CreateCustomJSONFileAsyncTask(accountId: accountId, kind: .backup)
-            createDBTask.start(progressHandler: { [weak self] progress in
+            createDBTask.start(progressHandler: { [weak self] (progress, stage)  in
                 self?.delegate?.progressUpdate(accountId: accountId, progress: progress, isLocal: false)
             }) { [weak self] (_, url) in
                 self?.queue.async {

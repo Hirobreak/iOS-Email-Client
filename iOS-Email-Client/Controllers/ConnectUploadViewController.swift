@@ -138,19 +138,13 @@ class ConnectUploadViewController: UIViewController{
     }
     
     func createDBFile(deviceId: Int32){
-        CreateCustomJSONFileAsyncTask(accountId: myAccount.compoundKey).start(progressHandler: { _ in }) { (error, url) in
+        CreateCustomJSONFileAsyncTask(accountId: myAccount.compoundKey).start(progressHandler: { _,_  in }) { (error, url) in
             guard let myUrl = url else {
                 self.presentProcessInterrupted()
                 return
             }
-            guard let compressedPath = try? AESCipher.compressFile(path: myUrl.path, outputName: StaticFile.gzippedDB.name, compress: true),
-                let outputPath = AESCipher.streamEncrypt(path: compressedPath, outputName: StaticFile.encryptedDB.name, keyData: self.keyData, ivData: self.ivData, operation: kCCEncrypt) else {
-                self.presentProcessInterrupted()
-                return
-            }
             CriptextFileManager.deleteFile(url: myUrl)
-            CriptextFileManager.deleteFile(path: compressedPath)
-            self.databasePath = outputPath
+            self.databasePath = myUrl.path
             self.state = .waiting
             self.handleState()
         }

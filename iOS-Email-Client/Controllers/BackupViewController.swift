@@ -120,12 +120,12 @@ class BackupViewController: UIViewController {
         
         
         if !shouldUpload {
-            let createDBTask = CreateCustomJSONFileAsyncTask(accountId: myAccount.compoundKey, kind: .share)
-            createDBTask.start(progressHandler: { [weak self] progress in
+            let createDBTask = CreateCustomJSONFileAsyncTask(accountId: myAccount.compoundKey, kind: .backup, password: password)
+            createDBTask.start(progressHandler: { [weak self] (progress, stage) in
                 self?.progressUpdate(accountId: (self?.myAccount.compoundKey)!, progress: progress, isLocal: true)
             }) { (error, url) in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.handleExportFile(url: url, password: password)
+                    self.handleExportFile(url: url)
                 }
             }
         } else {
@@ -136,22 +136,17 @@ class BackupViewController: UIViewController {
         }
     }
     
-    func handleExportFile(url: URL?, password: String? = nil) {
+    func handleExportFile(url: URL?) {
         self.uploading = false
         self.alert?.dismiss(animated: false, completion: nil)
         self.alert = nil
         
-        guard let dbUrl = url,
-            let compressedPath = try? AESCipher.compressFile(path: dbUrl.path, outputName: StaticFile.shareZip.name, compress: true) else {
-                self.showSnackbarMessage(message: String.localize("BACKUP_ERROR"), permanent: false)
-                return
+        guard let myUrl = url else {
+            self.showSnackbarMessage(message: String.localize("BACKUP_FOUND"), permanent: false)
+            return
         }
-        var filePath = compressedPath
-        if let pass = password,
-            let encryptPath = AESCipher.streamEncrypt(path: compressedPath, outputName: StaticFile.shareRSA.name, bundle: AESCipher.KeyBundle(password: pass, salt: AESCipher.generateRandomBytes(length: 8)), ivData: AESCipher.generateRandomBytes(length: 16), operation: kCCEncrypt) {
-            filePath = encryptPath
-        }
-        let activityVC = UIActivityViewController(activityItems: [URL(fileURLWithPath: filePath)], applicationActivities: nil)
+        
+        let activityVC = UIActivityViewController(activityItems: [myUrl], applicationActivities: nil)
         activityVC.completionWithItemsHandler = { (activity, success, items, error) in
             guard success else {
                 return

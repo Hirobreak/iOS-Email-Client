@@ -169,8 +169,8 @@ class ConnectDeviceViewController: UIViewController{
         guard let linkAcceptData = self.linkData,
             let keyData = Data(base64Encoded: data.key),
             let decryptedKey = SignalHandler.decryptData(keyData, messageType: .preKey, account: myAccount, recipientId: myAccount.username, deviceId: linkAcceptData.authorizerId),
-            let decryptedPath = AESCipher.streamEncrypt(path: path, outputName: StaticFile.decryptedDB.name, keyData: decryptedKey, ivData: nil, operation: kCCDecrypt),
-            let decompressedPath = try? AESCipher.compressFile(path: decryptedPath, outputName: StaticFile.unzippedDB.name, compress: false) else {
+            let decryptedPath = AESCipher.streamEncrypt(path: path, outputPath: StaticFile.restoreDec.url, keyData: decryptedKey, ivData: nil, operation: kCCDecrypt),
+            let decompressedPath = try? AESCipher.compressFile(path: decryptedPath, outputName: StaticFile.restoreUnzip.name, compress: false) else {
                 self.presentProcessInterrupted()
                 return
         }

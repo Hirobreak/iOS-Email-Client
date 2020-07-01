@@ -111,7 +111,7 @@ class CreateCustomJSONFileTests: XCTestCase {
     func testSuccessfullyCreateEncryptDecryptDBFile(){
         initData()
         let expect = expectation(description: "Callback runs after generating db file")
-        CreateCustomJSONFileAsyncTask(accountId: self.account.compoundKey).start(progressHandler: { _ in }) { (error, url) in
+        CreateCustomJSONFileAsyncTask(accountId: self.account.compoundKey).start(progressHandler: { _,_  in }) { (error, url) in
             guard let myUrl = url else {
                 XCTFail("unable to process db with error: \(String(describing: error))")
                 return
@@ -147,7 +147,7 @@ class CreateCustomJSONFileTests: XCTestCase {
     func testSuccessfullyCreateDBFromFile(){
         initData()
         let expect = expectation(description: "Callback runs after generating db file")
-        CreateCustomJSONFileAsyncTask(accountId: self.account.compoundKey).start(progressHandler: { _ in }) { (error, url) in
+        CreateCustomJSONFileAsyncTask(accountId: self.account.compoundKey).start(progressHandler: { _,_  in }) { (error, url) in
             guard let myUrl = url,
                 let account = DBManager.getFirstAccount() else {
                 XCTFail("unable to process db with error: \(String(describing: error))")

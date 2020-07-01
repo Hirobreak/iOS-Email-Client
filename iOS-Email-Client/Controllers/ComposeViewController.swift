@@ -1429,7 +1429,7 @@ extension ComposeViewController: TLPhotosPickerViewControllerDelegate {
             self.toggleAttachmentTable()
             return
         }
-        self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .fade)
+        self.tableView.reloadData()
         self.toggleAttachmentTable()
     }
 }

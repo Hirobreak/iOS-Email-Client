@@ -87,7 +87,7 @@ struct Env {
     static let maxAllowedDevices = 10
     
     enum linkFileExtensions: String {
-        case normal = "db"
+        case normal = "zip"
         case compressed = "gz"
         case encrypted = "enc"
         

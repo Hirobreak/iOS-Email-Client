@@ -31,8 +31,9 @@ class LinkFileHandlerVersion6: LinkFileInterface {
             realm.add(contact, update: .all)
             maps.contacts[contactId] = contact.email
         case "label":
+            let labelId = object["id"] as! Int
             let label = Label()
-            label.id = object["id"] as! Int
+            label.id = realm.objects(Label.self).count + 1
             label.visible = object["visible"] as! Bool
             label.color = object["color"] as! String
             label.text = object["text"] as! String
@@ -40,7 +41,12 @@ class LinkFileHandlerVersion6: LinkFileInterface {
             if let uuid = object["uuid"]{
                 label.uuid = uuid as! String
             }
+            if let existingLabel = realm.objects(Label.self).filter("text = %@ AND (account.compoundKey = %@ OR account = nil)", label.text, account.compoundKey).first {
+                maps.labels[labelId] = existingLabel.id
+                break
+            }
             realm.add(label, update: .all)
+            maps.labels[labelId] = label.id
         case "email":
             let id = object["id"] as! Int
             let email = Email()
@@ -80,8 +86,9 @@ class LinkFileHandlerVersion6: LinkFileInterface {
             let labelId = object["labelId"] as! Int
             let emailId = object["emailId"] as! Int
             guard let emailKey = maps.emails[emailId],
+                let storedLabelId = maps.labels[labelId],
                 let email = realm.object(ofType: Email.self, forPrimaryKey: "\(account.compoundKey):\(emailKey)"),
-                let label = realm.object(ofType: Label.self, forPrimaryKey: labelId) else {
+                let label = realm.object(ofType: Label.self, forPrimaryKey: storedLabelId) else {
                     return
             }
             email.labels.append(label)

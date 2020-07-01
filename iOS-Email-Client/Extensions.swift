@@ -454,53 +454,63 @@ extension String {
 }
 
 enum StaticFile {
-    case encryptedDB
-    case gzippedDB
-    case emailDB
-    case unzippedDB
-    case decryptedDB
+    
+    case linkUploadZip
+    case linkUploadEnc
     
     case backupDB
     case backupZip
-    case backupRSA
     
-    case shareDB
+    case shareEncryptedDB
     case shareZip
-    case shareRSA
+    case shareDB
+    
+    case linkLiteDB
+    case linkCompleteDB
+    
+    case backupLiteDB
+    case backupCompleteDB
+    
+    case restoreDB
+    case restoreDec
+    case restoreUnzip
     
     var name: String {
         switch self {
-        case .encryptedDB:
-            return "secure.db"
-        case .gzippedDB:
-            return "compressed.db"
-        case .emailDB:
-            return "emails.db"
-        case .unzippedDB:
-            return "decompressed.db"
-        case .decryptedDB:
-            return "decrypted.db"
         case .backupDB:
             return "backup.db"
-        case .backupZip:
-            return "backup.gz"
-        case .backupRSA:
-            return "backup.enc"
+        case .shareEncryptedDB:
+            let now = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEEE dd MMMM YYYY HH:mm"
+            return "backup-\(formatter.string(from: now)).enc"
         case .shareDB:
             let now = Date()
             let formatter = DateFormatter()
             formatter.dateFormat = "EEEE dd MMMM YYYY HH:mm"
             return "backup-\(formatter.string(from: now)).db"
+        case .linkLiteDB:
+            return "link-lite.db"
+        case .linkCompleteDB:
+            return "link-complete.db"
+        case .backupLiteDB:
+            return "backup-lite.db"
+        case .backupCompleteDB:
+            return "backup-complete.db"
+        case .restoreDB:
+            return "restore.db"
+        case .linkUploadZip:
+            return "link-upload.gz"
+        case .linkUploadEnc:
+            return "link-upload.db"
+        case .restoreDec:
+            return "restore-dec.gz"
+        case .restoreUnzip:
+            return "restore.db"
+        case .backupZip:
+            return "backup.gz"
         case .shareZip:
-            let now = Date()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE dd MMMM YYYY HH:mm"
-            return "backup-\(formatter.string(from: now)).gz"
-        case .shareRSA:
-            let now = Date()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE dd MMMM YYYY HH:mm"
-            return "backup-\(formatter.string(from: now)).enc"
+            return "share.gz"
         }
     }
     

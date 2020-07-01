@@ -43,8 +43,8 @@ class AESCipher {
         return cryptData
     }
     
-    class func streamEncrypt(path: String, outputName: String, bundle: KeyBundle? = nil, keyData: Data? = nil, ivData: Data?, operation: Int) -> String? {
-        let outputURL = CriptextFileManager.getURLForFile(name: outputName)
+    class func streamEncrypt(path: String, outputPath: URL, bundle: KeyBundle? = nil, keyData: Data? = nil, ivData: Data?, operation: Int) -> String? {
+        let outputURL = outputPath
         try? FileManager.default.removeItem(at: outputURL)
         FileManager.default.createFile(atPath: outputURL.path, contents: nil, attributes: nil)
         
